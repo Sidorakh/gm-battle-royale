@@ -245,9 +245,9 @@ client.on('message',async (msg)=>{
     //console.log(msg.member.roles.cache);
     if (msg.member.roles.cache.find(r=>r.id=='324536542737727488') == undefined) return;
     if (msg.author.id == client.user.id) return;
-    if (msg.channel.id != process.env.CHANNEL) {
-        return;
-    }
+    //if (msg.channel.id != process.env.CHANNEL) {
+    //    return;
+    //}
     if (msg.content.trim() == '!battle info') {
         if (msg.deletable) msg.delete();
         return msg.channel.send(`This is the Battle Royale Bot!`);
