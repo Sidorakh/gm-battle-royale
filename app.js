@@ -37,6 +37,7 @@ let state = {
     stage: 'waiting',
     /** @type {discord.Message} */
     message: null,
+    winners:{},
 };
 
 
@@ -321,11 +322,15 @@ async function battle_step(/** @type {discord.TextChannel*/ channel){
             users.push({name:user.username,id:user.id});
         });
     }
+    shuffle(users);
     let i = 0;
     state.fighters = [];
     for (const user of users) {
-        state.fighters.push(new Fighter(user.name,'symbols[i]',user.id));
-        i++;
+        if (state.winners[user.id] == undefined) {
+            state.fighters.push(new Fighter(user.name,'symbols[i]',user.id));
+            i++;
+        }
+        if (i >= 20) break;
     }
     const fields = [];
     for (const fighter of state.fighters) {
@@ -451,11 +456,19 @@ async function battle_step(/** @type {discord.TextChannel*/ channel){
         if (winner.elder_god != false) {
             await channel.send(`Fighter <@${winner.id}> has emerged victorious!`);
             (await channel.guild.members.fetch(winner.id)).roles.add('826256397800833104');
+            state.winners[winner.id] = true;
         } else {
             await channel.send(`Elder god ${winner.name} has emerged victorious!`)
         }
     }
 
+}
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
 }
 
 console.log('Ret-2-Go!');
