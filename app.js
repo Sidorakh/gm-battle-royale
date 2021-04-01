@@ -249,11 +249,11 @@ client.on('message',async (msg)=>{
     //if (msg.channel.id != process.env.CHANNEL) {
     //    return;
     //}
-    if (msg.content.trim() == '!battle info') {
+    if (msg.content.trim() == '$battle info') {
         if (msg.deletable) msg.delete();
         return msg.channel.send(`This is the Battle Royale Bot!`);
     }
-    if (msg.content.trim() == '!battle init') {
+    if (msg.content.trim() == '$battle init') {
         if(msg.deletable) {
             msg.delete();
         }
@@ -274,7 +274,7 @@ client.on('message',async (msg)=>{
         await message.react('⚔');
         state.message = message;
     }
-    if (msg.content.trim() == '!battle begin') {
+    if (msg.content.trim() == '$battle begin') {
         if(msg.deletable) {
             msg.delete();
         }
@@ -315,12 +315,30 @@ async function battle_step(/** @type {discord.TextChannel*/ channel){
     
     //const users = [{name:'Sidorakh',id:'141365209435471872'},{name:'shallowwater',id:'416804210894700564'},{name:'saratonin',id:'528368759551950848'},{name:'Mimpy',id:'230877503345000448'}];
     //const users = [{name:'Sidorakh',id:'141365209435471872'},{name:'baku',id:'225891587798859776'},{name:'Zandy',id:'261596299051270145'},{name:'Mimpy',id:'230877503345000448'}];
+    // const users = [];
+    // if (state.message != null) {
+    //     state.message.reactions.cache.get('⚔').users.cache.each(user=>{
+    //         if (user.id == client.user.id) return;
+    //         users.push({name:user.username,id:user.id});
+    //     });
+    // }
+    const MESSAGE_ID='827061040452862003';
+    const CHANNEL_ID='827052623248883745';
+    const guild = await client.guilds.fetch('262834612932182025');
+    /** @type {discord.TextChannel} */
+    const msg_channel = guild.channels.resolve(CHANNEL_ID);
+    const msg_message = await msg_channel.messages.fetch(MESSAGE_ID);
     const users = [];
-    if (state.message != null) {
-        state.message.reactions.cache.get('⚔').users.cache.each(user=>{
-            if (user.id == client.user.id) return;
+    console.log(msg_message);
+    if (msg_message) {
+        const reactions = ((await msg_message.reactions.resolve('⚔').users.fetch()).array());
+        for (const user of reactions) {
+            const member = await guild.members.fetch(user);
+            if(member.roles.cache.find(r=>r.id=='826256397800833104')) {
+                continue;
+            }
             users.push({name:user.username,id:user.id});
-        });
+        }
     }
     shuffle(users);
     let i = 0;
@@ -330,7 +348,7 @@ async function battle_step(/** @type {discord.TextChannel*/ channel){
             state.fighters.push(new Fighter(user.name,'symbols[i]',user.id));
             i++;
         }
-        if (i >= 20) break;
+        if (i >= 21) break;
     }
     const fields = [];
     for (const fighter of state.fighters) {
