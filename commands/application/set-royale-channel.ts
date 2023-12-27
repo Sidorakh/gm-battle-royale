@@ -7,8 +7,8 @@ export const command: ApplicationCommandInteraction = {
                                                 .addChannelOption(o=>o.setName('channel').setDescription('Channel for the battle royale').setRequired(true).addChannelTypes(discord.ChannelType.GuildText,discord.ChannelType.PublicThread,discord.ChannelType.PrivateThread)),
     async handler(interaction: discord.ChatInputCommandInteraction<discord.CacheType>) {
         await interaction.deferReply({ephemeral:true});
-        const channel = interaction.options.getChannel('channel')!;
-        set_channel(channel.id);
-        await interaction.editReply(`Set the battle royale channel to <#${channel.id}>`);
+        const channel = interaction.options.get('channel');
+        set_channel(channel!.channel!.id);
+        await interaction.editReply(`Set the battle royale channel to <#${channel!.channel!.id}>`);
     }
 }

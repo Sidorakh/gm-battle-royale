@@ -94,12 +94,6 @@ export async function interaction_handler(interaction: discord.Interaction<disco
             await cmd.handler(interaction);
         }
     }
-    if (interaction.isSelectMenu()) {
-        const cmd = interactions.select_menu.find(v=>v.id == interaction.customId);
-        if (cmd) {
-            await cmd.handler(interaction);
-        }
-    }
 }
 
 export function get_interactions() {
