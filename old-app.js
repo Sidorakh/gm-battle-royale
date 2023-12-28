@@ -177,31 +177,31 @@ const /** @type {Weapon[]} */ weapons = [
 ]
 const no_op = {
     skip: [
-        '%name% got stuck in a while loop while trying to collide with `obj_wall`',
-        '%name% got distracted by something shiny',
-        '%name% was too busy muttering to themselves to notice the battle going on around them',
+        '⏭ %name% got stuck in a while loop while trying to collide with `obj_wall`',
+        '⏭ %name% got distracted by something shiny',
+        '⏭ %name% was too busy muttering to themselves to notice the battle going on around them',
     ],
     heal: [
         {
-            message: '%name% found a potion, recovering %v%hp!',
+            message: '⬆ %name% found a potion, recovering %v%hp!',
             heal: 20,
         },
         {
-            message: '%name% ate some pizza, and recovered %v%hp!',
+            message: '🔼 %name% ate some pizza, and recovered %v%hp!',
             heal: 10
         },
         {
-            message: '%name% ate a bunch of grapes, and recovered %v%hp!',
+            message: '🔼 %name% ate a bunch of grapes, and recovered %v%hp!',
             heal: 8,
         }
     ],
     hurt: [
         {
-            message: '%name% stepped on a lego brick, and lost %v%hp',
+            message: '🔽 %name% stepped on a lego brick, and lost %v%hp',
             hurt: 20
         },
         {
-            message: '%name% drank a super potion.. but it was expired! This cost them %v%hp',
+            message: '🔽 %name% drank a super potion.. but it was expired! This cost them %v%hp',
             hurt: 20,
         }
     ],
@@ -345,7 +345,7 @@ async function battle_step(/** @type {discord.TextChannel*/ channel){
     state.fighters = [];
     for (const user of users) {
         if (state.winners[user.id] == undefined) {
-            state.fighters.push(new Fighter(user.name,'symbols[i]',user.id));
+            state.fighters.push(new Fighter(user.name,symbols[i],user.id));
             i++;
         }
         if (i >= 21) break;
@@ -377,7 +377,7 @@ async function battle_step(/** @type {discord.TextChannel*/ channel){
             const chance = fighter.weapon == null ? 0.9 : 0.1;
             if (num < chance) {
                 fighter.weapon = weapons[Math.floor(Math.random()*weapons.length)];
-                await channel.send(`${fighter.name} picked up a ${fighter.weapon.name}`)
+                await channel.send(`🗡 ${fighter.name} picked up a${['a','e','i','o','u'].indexOf(fighter.weapon.name[0].toLowerCase()) != -1 ? 'n' : ''} ${fighter.weapon.name[0]}`);
                 await sleep(1*SECONDS);
             }
         }
@@ -419,7 +419,7 @@ async function battle_step(/** @type {discord.TextChannel*/ channel){
                 }
                 await channel.send(msg.message);
                 if (fighter.hp <= 0) {
-                    await channel.send(`${fighter.name} succumbed to their fatal injuries!`)
+                    await channel.send(`☠ ${fighter.name} succumbed to their fatal injuries!`)
                 }
                 continue;
             }
@@ -429,12 +429,12 @@ async function battle_step(/** @type {discord.TextChannel*/ channel){
                 const weapon = fighter.weapon ? `a${['a','e','i','o','u'].indexOf(fighter.weapon.name[0].toLowerCase()) != -1 ? 'n' : ''} ${fighter.weapon.name}` : 'their own bare hands';
                 const damage = fighter.weapon ? fighter.weapon.damage : Math.floor(Math.random()*2);
                 target.hp -= damage;
-                await channel.send(`${fighter.name} attacked ${target.name} with ${weapon}, dealing ${damage == 0 ? 'no' : (damage+'hp')} damage`);
+                await channel.send(`⚔ ${fighter.name} attacked ${target.name} with ${weapon}, dealing ${damage == 0 ? 'no' : (damage+'hp')} damage`);
                 if (damage == 0) { 
                     await channel.send(`but ${target.name} was unaffected!`);
                 }
                 if (target.hp <= 0) {
-                    await channel.send(`${fighter.name} has killed ${target.name} with ${weapon}`);
+                    await channel.send(`❌ ${fighter.name} has killed ${target.name} with ${weapon}`);
                     target.hp = 0;
                 }
             } else {
