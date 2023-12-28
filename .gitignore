@@ -64,3 +64,5 @@ typings/
 config.json
 save/fighters.json
 save/options.json
+
+build
