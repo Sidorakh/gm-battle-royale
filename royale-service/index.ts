@@ -187,7 +187,7 @@ async function start_fight() {
             const targets = [...fighters.values()].filter(v=>v.id != fighter.id && v.hp > 0);
             const target = targets[Math.floor(targets.length*Math.random())];
             const hit = Math.random();
-            if (hit < HIT_CHANCE) {
+            if (hit < HIT_CHANCE && targets.length > 0) {
                 const weapon = fighter.weapon ? `${a_or_an(fighter.weapon.name)} ${fighter.weapon.name}` : 'their own bare hands';
                 const damage = fighter.weapon ? fighter.weapon.damage : Math.floor(Math.random()*MAX_FIST_DAMAGE);
                 target.hp -= damage;
