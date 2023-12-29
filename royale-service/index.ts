@@ -187,25 +187,29 @@ async function start_fight() {
             const targets = [...fighters.values()].filter(v=>v.id != fighter.id && v.hp > 0);
             const target = targets[Math.floor(targets.length*Math.random())];
             const hit = Math.random();
-            if (hit < HIT_CHANCE && targets.length > 0) {
-                const weapon = fighter.weapon ? `${a_or_an(fighter.weapon.name)} ${fighter.weapon.name}` : 'their own bare hands';
-                const damage = fighter.weapon ? fighter.weapon.damage : Math.floor(Math.random()*MAX_FIST_DAMAGE);
-                target.hp -= damage;
-                await channel.send({content:`⚔ **${escape(fighter.name)}** attacked **${escape(target.name)}** with ${weapon}${damage == 0 ? '' : ', dealing ' + (damage+'hp')} damage`,allowedMentions:{parse:[]}});
-                if (damage == 0) {
-                    await channel.send({content:`..but **${escape(target.name)}** was unaffected!`,allowedMentions:{parse:[]}})
-                } else {
-                    if (Math.random() < BREAK_CHANCE && fighter.weapon) {
-                        await channel.send(`💥 **${escape(fighter.name)}'s** ${fighter.weapon.name} broke!`)
-                        fighter.weapon = null;
+            if (targets.length > 0) {
+                if (hit < HIT_CHANCE) {
+                    const weapon = fighter.weapon ? `${a_or_an(fighter.weapon.name)} ${fighter.weapon.name}` : 'their own bare hands';
+                    const damage = fighter.weapon ? fighter.weapon.damage : Math.floor(Math.random()*MAX_FIST_DAMAGE);
+                    target.hp -= damage;
+                    await channel.send({content:`⚔ **${escape(fighter.name)}** attacked **${escape(target.name)}** with ${weapon}${damage == 0 ? '' : ', dealing ' + (damage+'hp')} damage`,allowedMentions:{parse:[]}});
+                    if (damage == 0) {
+                        await channel.send({content:`..but **${escape(target.name)}** was unaffected!`,allowedMentions:{parse:[]}})
+                    } else {
+                        if (Math.random() < BREAK_CHANCE && fighter.weapon) {
+                            await channel.send(`💥 **${escape(fighter.name)}'s** ${fighter.weapon.name} broke!`)
+                            fighter.weapon = null;
+                        }
                     }
-                }
-                if (target.hp <= 0) {
-                    await channel.send(`❌ **${escape(fighter.name)}** has killed **${escape(target.name)}** with ${weapon}`);
-                    target.hp = 0;
+                    if (target.hp <= 0) {
+                        await channel.send(`❌ **${escape(fighter.name)}** has killed **${escape(target.name)}** with ${weapon}`);
+                        target.hp = 0;
+                    }
+                } else {
+                    await channel.send(`**${escape(fighter.name)}** tried to attack **${escape(target.name)}**, but missed completely!`);
                 }
             } else {
-                await channel.send(`**${escape(fighter.name)}** tried to attack **${escape(target.name)}**, but missed completely!`);
+                await channel.send(`**${escape(fighter.name)}** looked around the battlefield in confusion`);
             }
             await sleep(2*ONE_SECOND);
         }
