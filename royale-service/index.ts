@@ -122,6 +122,10 @@ function a_or_an(phrase: string) {
     return `a${['a','e','i','o','u','@'].indexOf(phrase[0].toLowerCase()) != -1 ? 'n' : ''}`;
 }
 
+export function check_fighter_rostered(id: string) {
+    return members.includes(id);
+}
+
 export function begin_fight() {
     if (royale_underway) {
         return false;
