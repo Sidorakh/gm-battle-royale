@@ -105,8 +105,12 @@ async function setup_fighters() {
     shuffle(users);
     users.splice(21);
     for (const id of users) {
-        const member = await guild.members.fetch(id);
-        fighters.set(id, new Fighter(member.displayName,id));
+        try {
+            const member = await guild.members.fetch(id);
+            fighters.set(id, new Fighter(member.displayName,id));
+        } catch(e) {
+            console.log(`Could not locate user ${id}`);
+        }
     }
 }
 
@@ -196,7 +200,7 @@ async function start_fight() {
                     const weapon = fighter.weapon ? `${a_or_an(fighter.weapon.name)} ${fighter.weapon.name}` : 'their own bare hands';
                     const damage = fighter.weapon ? fighter.weapon.damage : Math.floor(Math.random()*MAX_FIST_DAMAGE);
                     target.hp -= damage;
-                    await channel.send({content:`⚔ **${escape(fighter.name)}** attacked **${escape(target.name)}** with ${weapon}${damage == 0 ? '' : ', dealing ' + (damage+'hp')} damage`,allowedMentions:{parse:[]}});
+                    await channel.send({content:`⚔ **${escape(fighter.name)}** attacked **${escape(target.name)}** with ${weapon}${damage == 0 ? '' : ', dealing ' + (damage+'hp') + ' damage'}`,allowedMentions:{parse:[]}});
                     if (damage == 0) {
                         await channel.send({content:`..but **${escape(target.name)}** was unaffected!`,allowedMentions:{parse:[]}})
                     } else {
@@ -229,7 +233,7 @@ async function start_fight() {
         await channel.send({content:`Turn ${turn} is over!`,embeds:[{fields,color:0x9acd4a}]})
         if ([...fighters.values()].filter(v=>v.hp > 0).length == 1) {
             winner = [...fighters.values()].filter(v=>v.hp > 0)[0];
-            console.log(`Looks like everone else is dead, so, ${winner.name} has won!`);
+            console.log(`Looks like everyone else is dead, so, ${winner.name} has won!`);
         }
     }
     if (winner == null) {
