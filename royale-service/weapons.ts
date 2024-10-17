@@ -52,7 +52,7 @@ const weapons = [
     new Weapon("Slime Pickaxe",3),
     new Weapon("Nuclear Pickaxe",6),
     new Weapon("Regular Punch",2),
-    new Weapon("Copy of Shaun Spalding's Collision Code",10),
+    new Weapon("Copy of Sara Spalding's Collision Code",10),
     new Weapon("Sticky Bomb Launcher",6),
     new Weapon("Large Wrench",4),
     new Weapon("Portal Gun",5),
